@@ -8,7 +8,7 @@ import {
   Link,
 } from "@mui/material";
 import NextLink from "next/link";
-import { FC, useState, useMemo, useEffect } from "react";
+import { FC, useState, useMemo } from "react";
 import { IProduct } from "../../interfaces";
 
 interface Props {
@@ -17,19 +17,13 @@ interface Props {
 
 export const ProductCard: FC<Props> = ({ product }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [hasWindow, setHasWindow] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const productImage = useMemo(() => {
     return isHovered
-      ? `products/${product.images[1]}`
-      : `products/${product.images[0]}`;
+      ? `/products/${product.images[1]}`
+      : `/products/${product.images[0]}`;
   }, [isHovered, product.images]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setHasWindow(true);
-    }
-  }, []);
 
   return (
     <Grid
@@ -40,23 +34,22 @@ export const ProductCard: FC<Props> = ({ product }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <Card>
-        {hasWindow && (
-          <NextLink href="/product/slug" passHref prefetch={false}>
-            <Link>
-              <CardActionArea>
-                <CardMedia
-                  component="img"
-                  className="fadeIn"
-                  image={productImage}
-                  alt={product.title}
-                  onLoad={() => console.log("cargo")}
-                />
-              </CardActionArea>
-            </Link>
-          </NextLink>
-        )}
+        <NextLink href={`/product/${product.slug}`} passHref prefetch={false}>
+          <CardActionArea>
+            <CardMedia
+              component="img"
+              className="fadeIn"
+              image={productImage}
+              alt={product.title}
+              onLoad={() => setIsImageLoaded(true)}
+            />
+          </CardActionArea>
+        </NextLink>
       </Card>
-      <Box sx={{ mt: 1 }} className="fadeIn">
+      <Box
+        sx={{ mt: 1, display: isImageLoaded ? "block" : "none" }}
+        className="fadeIn"
+      >
         <Typography fontWeight={700}>{product.title}</Typography>
         <Typography fontWeight={500}>${product.price}</Typography>
       </Box>
