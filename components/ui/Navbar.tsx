@@ -18,10 +18,11 @@ import {
 } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
-import { UiContext } from "../../context";
+import { UiContext, CartContext } from "../../context";
 
 export const Navbar = () => {
   const { toggleSideMenu } = useContext(UiContext);
+  const { numberOfItems } = useContext(CartContext);
   const { asPath, push } = useRouter();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -139,7 +140,10 @@ export const Navbar = () => {
 
         <NextLink href="/cart" passHref>
           <IconButton>
-            <Badge badgeContent={2} color="secondary">
+            <Badge
+              badgeContent={numberOfItems > 9 ? "+9" : numberOfItems}
+              color="secondary"
+            >
               <ShoppingCartOutlined />
             </Badge>
           </IconButton>
