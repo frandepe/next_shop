@@ -9,10 +9,10 @@ import {
 } from "@mui/material";
 import { AuthLayout } from "../../components/layouts";
 import NextLink from "next/link";
-
+import { GetServerSideProps } from "next";
 import { useForm } from "react-hook-form";
 import { validations } from "../../utils";
-import { tesloApi } from "../../api";
+import { getSession, signIn } from "next-auth/react";
 import { ErrorOutline } from "@mui/icons-material";
 import { useState, useContext } from "react";
 import { useRouter } from "next/router";
@@ -48,8 +48,9 @@ const RegisterPage = () => {
     }
 
     //* navega a la pantalla en la que el usuario estaba
-    const destination = router.query.p?.toString() || "/";
-    router.replace(destination);
+    // const destination = router.query.p?.toString() || "/";
+    // router.replace(destination);
+    await signIn("credentials", { email, password });
   };
 
   return (
@@ -140,6 +141,28 @@ const RegisterPage = () => {
       </form>
     </AuthLayout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query,
+}) => {
+  const session = await getSession({ req });
+
+  const { p = "/" } = query;
+
+  if (session) {
+    return {
+      redirect: {
+        destination: p.toString(),
+        permanente: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default RegisterPage;
