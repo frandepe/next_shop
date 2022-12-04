@@ -148,6 +148,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   query,
 }) => {
   const session = await getSession({ req });
+  // console.log({session});
 
   const { p = "/" } = query;
 
@@ -155,7 +156,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     return {
       redirect: {
         destination: p.toString(),
-        permanente: false,
+        permanent: false,
       },
     };
   }
