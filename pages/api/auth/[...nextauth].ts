@@ -1,7 +1,8 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
-import Creadentials from "next-auth/providers/credentials";
+import CreadentialsProvider from "next-auth/providers/credentials";
 import { dbUsers } from "../../../database";
+import { IUser } from "../../../interfaces";
 
 declare module "next-auth" {
   interface Session {
@@ -15,7 +16,7 @@ export const authOptions: NextAuthOptions = {
   providers: [
     // ...add more providers here
 
-    Creadentials({
+    CreadentialsProvider({
       name: "Custom Login",
       credentials: {
         email: {
@@ -29,24 +30,8 @@ export const authOptions: NextAuthOptions = {
           placeholder: "*******",
         },
       },
-      //   async authorize(credentials) {
-      //     console.log({ credentials });
 
-      //     return { name: "Juan", correo: "juan@google.com", role: "admin" };
-      //   },
-      async authorize(credentials) {
-        // const res = await fetch("http://localhost:3000/api/hello", {
-        //   method: "POST",
-        //   body: JSON.stringify(credentials),
-        //   headers: { "Content-Type": "application/json" },
-        // });
-        // const user = await res.json();
-
-        // if (res.ok && user) {
-        //   return user;
-        // }
-        // return null;
-        console.log({ credentials });
+      async authorize(credentials): Promise<any> {
         return await dbUsers.checkUserEmailPassword(
           credentials!.email,
           credentials!.password

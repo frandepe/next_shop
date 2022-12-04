@@ -60,7 +60,7 @@ const AddressPage = () => {
     const addressFromCookies = getAddressFromCookies();
     reset(addressFromCookies);
     setDefaultCountry(addressFromCookies.country);
-  }, [reset, getAddressFromCookies]);
+  }, [reset]);
 
   const onSubmitAddress = (data: FormData) => {
     updateAddress(data);
@@ -147,26 +147,24 @@ const AddressPage = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
-              {!!defaultCountry && (
-                <TextField
-                  select
-                  variant="filled"
-                  fullWidth
-                  label="País"
-                  defaultValue={defaultCountry}
-                  {...register("country", {
-                    required: "El país es requerido",
-                  })}
-                  error={!!errors.country}
-                  helperText={errors.country?.message}
-                >
-                  {countries.map((country) => (
-                    <MenuItem key={country.code} value={country.code}>
-                      {country.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
+              <TextField
+                select
+                variant="filled"
+                fullWidth
+                label="País"
+                defaultValue={defaultCountry}
+                {...register("country", {
+                  required: "El país es requerido",
+                })}
+                error={!!errors.country}
+                helperText={errors.country?.message}
+              >
+                {countries.map((country) => (
+                  <MenuItem key={country.code} value={country.code}>
+                    {country.name}
+                  </MenuItem>
+                ))}
+              </TextField>
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
