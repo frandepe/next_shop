@@ -13,6 +13,13 @@ export const getProductBySlug = async (
     return null;
   }
 
+  //*Capturar imagenes del fs y de cloudinary
+  product.images = product.images.map((image) => {
+    return image.includes("http")
+      ? image
+      : `${process.env.HOST_NAME}products/${image}`;
+  });
+
   return JSON.parse(JSON.stringify(product));
 };
 
@@ -40,7 +47,17 @@ export const getProductsByTerm = async (term: string): Promise<IProduct[]> => {
 
   await db.disconnect();
 
-  return products;
+  const updatedProducts = products.map((product) => {
+    product.images = product.images.map((image) => {
+      return image.includes("http")
+        ? image
+        : `${process.env.HOST_NAME}products/${image}`;
+    });
+
+    return product;
+  });
+
+  return updatedProducts;
 };
 
 export const getAllProducts = async (): Promise<IProduct[]> => {
@@ -49,8 +66,18 @@ export const getAllProducts = async (): Promise<IProduct[]> => {
 
   await db.disconnect();
 
+  const updatedProducts = products.map((product) => {
+    product.images = product.images.map((image) => {
+      return image.includes("http")
+        ? image
+        : `${process.env.HOST_NAME}products/${image}`;
+    });
+
+    return product;
+  });
+
   //* cuando tenemos errores de serialized lo podemos solucionar de la siguiente manera:
-  return JSON.parse(JSON.stringify(products));
+  return JSON.parse(JSON.stringify(updatedProducts));
   //* en este caso el error se debio a que
   //* el id me lo traia de esta manera _id new Object(bla bla)
   //* y la fecha (createdAt) en formato de numero
